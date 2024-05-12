@@ -6,35 +6,39 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2AccessToken;
 use QuickBooksOnline\API\DataService\DataService;
+use Shawnreid\LaravelQuickbooks\Models\TestUserModel;
 use Shawnreid\LaravelQuickbooks\QuickbooksAction;
 use Shawnreid\LaravelQuickbooks\QuickbooksClient;
-use Shawnreid\LaravelQuickbooks\Models\TestUserModel;
 
 /**
  * @runTestsInSeparateProcesses
+ *
  * @preserveGlobalState disabled
-*/
+ */
 class ClientTest extends TestCase
 {
     use RefreshDatabase;
 
-    private QuickbooksClient  $client;
+    private QuickbooksClient $client;
+
     private OAuth2AccessToken $accessToken;
-    private TestUserModel     $noUserToken;
-    private TestUserModel     $hasUserToken;
+
+    private TestUserModel $noUserToken;
+
+    private TestUserModel $hasUserToken;
 
     public function setUp(): void
     {
         parent::setup();
 
-        $this->client       = new QuickbooksClient();
-        $this->noUserToken  = TestUserModel::factory()->create();
+        $this->client = new QuickbooksClient();
+        $this->noUserToken = TestUserModel::factory()->create();
         $this->hasUserToken = TestUserModel::factory()->hasQuickbooksToken()->create();
     }
 
     public function test_get_data_service_can_be_constructed(): void
     {
-        $this->assertInstanceOf(DataService::class, $this->client->confgiureDataService());
+        $this->assertInstanceOf(DataService::class, $this->client->configureDataService());
     }
 
     public function test_authorization_url_is_returned(): void
@@ -74,8 +78,8 @@ class ClientTest extends TestCase
         $externalMock = $this->mock('overload:QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2LoginHelper');
 
         $request = new Request([
-            'code'    => 1,
-            'realmId' => 1
+            'code' => 1,
+            'realmId' => 1,
         ]);
 
         session()->put('_quickbooksId', $user->id);

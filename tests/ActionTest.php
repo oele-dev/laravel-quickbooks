@@ -3,19 +3,20 @@
 namespace Shawnreid\LaravelQuickbooks\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
+use Mockery\MockInterface;
 use QuickBooksOnline\API\Data\IPPIntuitEntity;
 use QuickBooksOnline\API\Data\IPPInvoice;
 use QuickBooksOnline\API\DataService\DataService;
 use Shawnreid\LaravelQuickbooks\QuickbooksAction;
 use Shawnreid\LaravelQuickbooks\QuickbooksClient;
-use Mockery\MockInterface;
-use Mockery;
 
 class ActionTest extends TestCase
 {
     use RefreshDatabase;
 
     private QuickbooksClient $client;
+
     private QuickbooksAction $action;
 
     public function setUp(): void
@@ -23,36 +24,36 @@ class ActionTest extends TestCase
         parent::setup();
 
         $this->client = new QuickbooksClient();
-        $this->action = new QuickbooksAction($this->client->confgiureDataService());
+        $this->action = new QuickbooksAction($this->client->configureDataService());
     }
 
     private function body(): array
     {
         return [
-            "Line" => [
+            'Line' => [
                 [
-                    "Amount" => 100.00,
-                    "DetailType" => "SalesItemLineDetail",
-                    "SalesItemLineDetail" => [
-                    "ItemRef" => [
-                        "value" => 20,
-                        "name" => "Services"
-                    ]
-                    ]
-                ]
+                    'Amount' => 100.00,
+                    'DetailType' => 'SalesItemLineDetail',
+                    'SalesItemLineDetail' => [
+                        'ItemRef' => [
+                            'value' => 20,
+                            'name' => 'Services',
+                        ],
+                    ],
+                ],
             ],
-            "CustomerRef"=> [
-                  "value"=> 62
+            'CustomerRef' => [
+                'value' => 62,
             ],
-            "BillEmail" => [
-                  "Address" => "Familiystore@intuit.com"
+            'BillEmail' => [
+                'Address' => 'Familiystore@intuit.com',
             ],
-            "BillEmailCc" => [
-                  "Address" => "a@intuit.com"
+            'BillEmailCc' => [
+                'Address' => 'a@intuit.com',
             ],
-            "BillEmailBcc" => [
-                  "Address" => "v@intuit.com"
-            ]
+            'BillEmailBcc' => [
+                'Address' => 'v@intuit.com',
+            ],
         ];
     }
 
@@ -141,7 +142,6 @@ class ActionTest extends TestCase
 
         $mock = Mockery::mock(QuickbooksAction::class, [$dataServiceMock])->makePartial();
 
-
         $result = $mock->invoice()->update(1, $this->body());
 
         $this->assertInstanceOf(IPPIntuitEntity::class, $result);
@@ -160,7 +160,6 @@ class ActionTest extends TestCase
         });
 
         $mock = Mockery::mock(QuickbooksAction::class, [$dataServiceMock])->makePartial();
-
 
         $result = $mock->invoice()->delete(1);
 
